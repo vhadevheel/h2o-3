@@ -40,9 +40,9 @@ public class GLMModel extends Model<GLMModel,GLMModel.GLMParameters,GLMModel.GLM
   }
 
   @Override
-  public void computeEffectiveParameters() {
-    super.computeEffectiveParameters();
-    EffectiveParametersUtils.initFoldAssignment(_parms, _effective_parms);
+  public void initActualParamValues() {
+    super.initActualParamValues();
+    EffectiveParametersUtils.initFoldAssignment(_parms);
   }
   
   public void setVcov(double[][] inv) {_output._vcov = inv;}
