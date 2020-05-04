@@ -77,6 +77,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
   protected ModelBuilder(P parms, Key<M> key) {
     _job = new Job<>(_result = key, parms.javaName(), parms.algoName());
     _parms = parms;
+    _input_parms = (P) parms.clone();
   }
 
   /** Shared pre-existing Job and unique new result key */
@@ -84,6 +85,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
     _job = job;
     _result = defaultKey(parms.algoName());
     _parms = parms;
+    _input_parms = (P) parms.clone();
   }
 
   /** List of known ModelBuilders with all default args; endlessly cloned by
@@ -172,6 +174,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
     Job<Model> mJob = new Job<>(mKey, parms.javaName(), parms.algoName());
     B newMB = ModelBuilder.make(parms.algoName(), mJob, mKey);
     newMB._parms = parms.clone();
+    newMB._input_parms = parms.clone();
     return newMB;
   }
 
@@ -229,7 +232,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
         Scope.enter();
         _parms.read_lock_frames(_job); // Fetch & read-lock input frames
         computeImpl();
-        setInputValues();
+        computeParameters();
         saveModelCheckpointIfConfigured();
       } finally {
         _parms.read_unlock_frames(_job);
@@ -258,10 +261,15 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
 
     public abstract void computeImpl();
 
-    public final void setInputValues() {
+    public final void computeParameters() {
       M model = _result.get();
       if (model != null) {
+        //set input parameters
         model.setInputParms(_input_parms);
+        //set _fold_assignment param to null in case it was entered as AUTO and it wasn't set during the training
+        if (model._input_parms._fold_assignment == Model.Parameters.FoldAssignmentScheme.AUTO && model._parms._fold_assignment == Model.Parameters.FoldAssignmentScheme.AUTO) {
+          model._parms._fold_assignment = null;
+        }
       }
     }
   }
@@ -329,6 +337,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
     public void setupOnRemote() {
       _mb = ModelBuilder.make(_parms.algoName(), _job, _key);
       _mb._parms = _parms;
+      _mb._input_parms = _parms.clone();
       _mb.init(false); // validate parameters
     }
     @Override
@@ -422,6 +431,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
     public void run() {
       ModelBuilder mb = ModelBuilder.make(_parms.algoName(), _job, _key);
       mb._parms = _parms;
+      mb._input_parms = _parms.clone();
       mb.trainModelNested(_fr);
     }
   }
@@ -627,6 +637,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
       cv_mb._parms._nfolds = 0; // Each submodel is not itself folded
       cv_mb._parms._max_runtime_secs = cv_max_runtime_secs;
       cv_mb.clearValidationErrors(); // each submodel gets its own validation messages and error_count()
+      cv_mb._input_parms = (P) _parms.clone();
 
       // Error-check all the cross-validation Builders before launching any
       cv_mb.init(false);

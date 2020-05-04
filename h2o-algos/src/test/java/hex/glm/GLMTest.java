@@ -141,6 +141,7 @@ public class GLMTest  extends TestUtil {
       params._standardize=true;
       params._response_column = responseColumn;
       params._train = train._key;
+      GLMParameters paramsInitialClone = (GLMParameters) params.clone();
       GLMModel glm = new GLM(params).trainModel().get();
       Scope.track_generic(glm);
       
@@ -162,6 +163,7 @@ public class GLMTest  extends TestUtil {
         countIndex++;
       }
 
+      params = (GLMParameters) paramsInitialClone.clone();
       params._standardize = false;  // build a model on non-standardized columns with no standardization.
       GLMModel glmF = new GLM(params).trainModel().get();
       Scope.track_generic(glmF);
@@ -213,7 +215,8 @@ public class GLMTest  extends TestUtil {
       new TestUtil.StandardizeColumns(numCols2Transform, colMeans, oneOSigma, train).doAll(train);
       DKV.put(train);
       Scope.track(train);
-      
+
+      params = (GLMParameters) paramsInitialClone.clone();
       params._standardize=false;
       params._train = train._key;
       GLMModel glmS = new GLM(params).trainModel().get();
@@ -764,6 +767,7 @@ public class GLMTest  extends TestUtil {
       params._alpha = new double[]{1};
       params._lambda = new double[]{0.001607};
       params._obj_reg = 1.0/380;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       GLM glm = new GLM( params, modelKey);
       model = glm.trainModel().get();
       assertTrue(glm.isStopped());
@@ -777,6 +781,7 @@ public class GLMTest  extends TestUtil {
       model.delete();
       params._lambda = new double[]{0};
       params._alpha = new double[]{0};
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       FVecFactory.makeByteVec(betaConsKey, "names, lower_bounds, upper_bounds\n RACE, -.5, .5\n DCAPS, -.4, .4\n DPROS, -.5, .5 \nPSA, -.5, .5\n VOL, -.5, .5");
       betaConstraints = ParseDataset.parse(Key.make("beta_constraints.hex"), betaConsKey);
       glm = new GLM( params, modelKey);
@@ -963,6 +968,7 @@ public class GLMTest  extends TestUtil {
       double[] beta_1 = model.beta();
       params._solver = Solver.L_BFGS;
       params._max_iterations = 1000;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       glm = new GLM( params, modelKey);
       model = glm.trainModel().get();
       fr.add("CAPSULE", fr.remove("CAPSULE"));
@@ -1254,6 +1260,7 @@ public class GLMTest  extends TestUtil {
       // Build a POJO, validate same results
       params._train = frMM._key;
       params._ignored_columns = new String[]{"X"};
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       model2 = new GLM( params).trainModel().get();      HashMap<String, Double> coefs1 = model1.coefficients();
       testScoring(model2,frMM);
       HashMap<String, Double> coefs2 = model2.coefficients();
@@ -1277,6 +1284,7 @@ public class GLMTest  extends TestUtil {
       params._standardize = true;
       params._train = frMM._key;
       params._use_all_factor_levels = true;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       // test the gram
       DataInfo dinfo = new DataInfo(frMM, null, 1, true, DataInfo.TransformType.STANDARDIZE, DataInfo.TransformType.NONE, true, false, false, false, false, false);
       GLMIterationTask glmt = new GLMIterationTask(null, dinfo, new GLMWeightsFun(params), null).doAll(dinfo._adaptedFrame);
@@ -1291,10 +1299,12 @@ public class GLMTest  extends TestUtil {
       params._standardize = false;
       params._family = Family.binomial;
       params._link = Link.logit;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       model3 = new GLM( params).trainModel().get();
       testScoring(model3,frMM);
       params._train = fr._key;
       params._ignored_columns = ignoredCols;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       model4 = new GLM( params).trainModel().get();
       testScoring(model4,fr);
       assertEquals(nullDeviance(model3), nullDeviance(model4), 1e-4);
@@ -1637,6 +1647,7 @@ public class GLMTest  extends TestUtil {
       model = glm.trainModel().get();
       assertTrue(model._output.bestSubmodel().iteration == 5);
       model.delete();
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       params._max_iterations = 4;
       glm = new GLM(params);
       model = glm.trainModel().get();
@@ -1665,6 +1676,7 @@ public class GLMTest  extends TestUtil {
       assertEquals(model._output._training_metrics._MSE, mm._MSE, 1e-8);
       assertEquals(((ModelMetricsBinomialGLM)model._output._training_metrics)._resDev, ((ModelMetricsBinomialGLM)mm)._resDev, 1e-8);
       double prior = 1e-5;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       params._prior = prior;
       // test the same data and model with prior, should get the same model except for the intercept
       glm = new GLM(params);
@@ -1682,6 +1694,7 @@ public class GLMTest  extends TestUtil {
       params._obj_reg = -1;
       params._max_iterations = 500;
       params._objective_epsilon = 1e-6;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       // test the same data and model with prior, should get the same model except for the intercept
       glm = new GLM(params);
       model3 = glm.trainModel().get();
@@ -1700,6 +1713,7 @@ public class GLMTest  extends TestUtil {
       assertEquals("mse don't match, " + model3._output._training_metrics._MSE + " != " + mm3._MSE,model3._output._training_metrics._MSE,mm3._MSE,1e-8);
       assertEquals("res-devs don't match, " + ((ModelMetricsBinomialGLM)model3._output._training_metrics)._resDev + " != " + ((ModelMetricsBinomialGLM)mm3)._resDev,((ModelMetricsBinomialGLM)model3._output._training_metrics)._resDev, ((ModelMetricsBinomialGLM)mm3)._resDev,1e-4);
       // test the same data and model with prior, should get the same model except for the intercept
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       glm = new GLM(params);
       model4 = glm.trainModel().get();
       assertEquals("mse don't match, " + model3._output._training_metrics._MSE + " != " + model4._output._training_metrics._MSE,model3._output._training_metrics._MSE,model4._output._training_metrics._MSE,1e-6);
@@ -1976,6 +1990,7 @@ public class GLMTest  extends TestUtil {
       params._alpha = new double[]{1};
       for(Solver s: new Solver[]{Solver.IRLSM, Solver.COORDINATE_DESCENT}){//Solver.COORDINATE_DESCENT,}) { // LBFGS lambda-search is too slow now
         params._solver = s;
+        params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
         GLM glm = new GLM( params, modelKey);
         glm.trainModel().get();
         model = DKV.get(modelKey).get();
@@ -1990,6 +2005,7 @@ public class GLMTest  extends TestUtil {
       params._max_active_predictors = 100;
       params._lambda_min_ratio = 1e-2;
       params._nlambdas = 100;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       GLM glm = new GLM( params, modelKey);
       glm.trainModel().get();
       model = DKV.get(modelKey).get();
@@ -2003,6 +2019,7 @@ public class GLMTest  extends TestUtil {
       params._max_active_predictors = 250;
       params._lambda = null;
       params._lambda_search = false;
+      params._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       glm = new GLM( params, modelKey);
       glm.trainModel().get();
       model = DKV.get(modelKey).get();
@@ -2161,6 +2178,7 @@ public class GLMTest  extends TestUtil {
       parms._train = trn._key;
       parms._response_column = "label";
       parms._missing_values_handling = MissingValuesHandling.Skip;
+      GLMParameters parms2 = (GLMParameters) parms.clone(); 
       GLMModel m = new GLM(parms).trainModel().get();
       System.out.println("coefficients = " + m.coefficients());
       double icpt = m.coefficients().get("Intercept");
@@ -2169,8 +2187,8 @@ public class GLMTest  extends TestUtil {
       Assert.assertEquals(icpt+m.coefficients().get("color.blue"), preds.vec(0).at(1), 0);
       Assert.assertEquals(icpt+m.coefficients().get("color.blue"), preds.vec(0).at(2), 0);
       Assert.assertEquals(icpt, preds.vec(0).at(3), 0);
-      parms._missing_values_handling = MissingValuesHandling.MeanImputation;
-      GLMModel m2 = new GLM(parms).trainModel().get();
+      parms2._missing_values_handling = MissingValuesHandling.MeanImputation;
+      GLMModel m2 = new GLM(parms2).trainModel().get();
       Frame preds2 = m2.score(tst);
       icpt = m2.coefficients().get("Intercept");
       System.out.println("coefficients = " + m2.coefficients());
