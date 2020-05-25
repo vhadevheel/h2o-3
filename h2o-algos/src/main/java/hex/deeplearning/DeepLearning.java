@@ -324,10 +324,11 @@ public class DeepLearning extends ModelBuilder<DeepLearningModel,DeepLearningMod
           if (cp != null) cp.unlock(_job);
         }
       }
-      trainModel(cp);
-      if (_parms._evaluate_auto) {
+      if (_parms._evaluate_auto && _parms._distribution == DistributionFamily.AUTO) {
         _parms._distribution = cp.model_info().get_params()._distribution;
+        cp._parms._distribution = _parms._distribution;
       }
+      trainModel(cp);
       for (Key k : removeMe) DKV.remove(k);
 
       // clean up, but don't delete weights and biases if user asked for export
