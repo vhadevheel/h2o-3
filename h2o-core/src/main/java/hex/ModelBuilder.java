@@ -181,7 +181,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
   /** All the parameters required to build the model. */
   public P _parms;              // Not final, so CV can set-after-clone
 
-  /** All the parameters required to build the model. */
+  /** All the parameters required to build the model conserved in the input form, with AUTO values not evaluated yet. */
   public P _input_parms;
 
   /** Training frame: derived from the parameter's training frame, excluding
