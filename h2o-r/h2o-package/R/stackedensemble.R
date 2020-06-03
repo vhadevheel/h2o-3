@@ -39,6 +39,7 @@
 #'        weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
 #'        data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
 #'        well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.
+#' @param offset_column Offset column. This will be added to the combination of columns before applying the link function.
 #' @param seed Seed for random numbers; passed through to the metalearner algorithm. Defaults to -1 (time-based random number).
 #' @param score_training_samples Specify the number of training set samples for scoring. The value must be >= 0. To use all training samples,
 #'        enter 0. Defaults to 10000.
@@ -109,6 +110,7 @@ h2o.stackedEnsemble <- function(x,
                                 metalearner_fold_column = NULL,
                                 metalearner_params = NULL,
                                 weights_column = NULL,
+                                offset_column = NULL,
                                 seed = -1,
                                 score_training_samples = 10000,
                                 keep_levelone_frame = FALSE,
@@ -196,6 +198,8 @@ h2o.stackedEnsemble <- function(x,
     parms$metalearner_fold_column <- metalearner_fold_column
   if (!missing(weights_column))
     parms$weights_column <- weights_column
+  if (!missing(offset_column))
+    parms$offset_column <- offset_column
   if (!missing(seed))
     parms$seed <- seed
   if (!missing(score_training_samples))
@@ -268,6 +272,7 @@ h2o.stackedEnsemble <- function(x,
                                                 metalearner_fold_column = NULL,
                                                 metalearner_params = NULL,
                                                 weights_column = NULL,
+                                                offset_column = NULL,
                                                 seed = -1,
                                                 score_training_samples = 10000,
                                                 keep_levelone_frame = FALSE,
@@ -360,6 +365,8 @@ h2o.stackedEnsemble <- function(x,
     parms$metalearner_fold_column <- metalearner_fold_column
   if (!missing(weights_column))
     parms$weights_column <- weights_column
+  if (!missing(offset_column))
+    parms$offset_column <- offset_column
   if (!missing(seed))
     parms$seed <- seed
   if (!missing(score_training_samples))

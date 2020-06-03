@@ -113,6 +113,7 @@ public abstract class Metalearner<B extends ModelBuilder<M, P, ?>, M extends Mod
     parms._response_column = _model.responseColumn;
 
     parms._weights_column = _model._parms._weights_column;
+    parms._offset_column = _model._parms._offset_column;
   }
 
   protected void setCrossValidationParams(P parms) {
