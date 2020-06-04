@@ -497,7 +497,6 @@ public class GLRMTest extends TestUtil {
       parms._gamma_x = parms._gamma_y = 1;
       parms._regularization_x = GlrmRegularizer.OneSparse;
       parms._regularization_y = GlrmRegularizer.NonNegative;
-      parms._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       try {
         job = new GLRM(parms);
         model = job.trainModel().get();
@@ -514,7 +513,6 @@ public class GLRMTest extends TestUtil {
       parms._gamma_x = 1; parms._gamma_y = 0;
       parms._regularization_x = GlrmRegularizer.UnitOneSparse;
       parms._regularization_y = GlrmRegularizer.None;
-      parms._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       try {
         job = new GLRM(parms);
         model = job.trainModel().get();
@@ -531,7 +529,6 @@ public class GLRMTest extends TestUtil {
       parms._gamma_x = 1; parms._gamma_y = 0;
       parms._regularization_x = GlrmRegularizer.UnitOneSparse;
       parms._regularization_y = GlrmRegularizer.None;
-      parms._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       try {
         job = new GLRM(parms);
         model = job.trainModel().get();
@@ -717,7 +714,6 @@ public class GLRMTest extends TestUtil {
       Scope.track(scoreN);
       Scope.track_generic(modelN);
 
-      parms._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
       GLRM glrmParmsW = new GLRM(parms);
       glrmParmsW.setWideDataset(true);  // force to treat dataset as wide even though it is not.
       modelW = glrmParmsW.trainModel().get();
