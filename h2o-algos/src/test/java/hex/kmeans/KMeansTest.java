@@ -1,6 +1,5 @@
 package hex.kmeans;
 
-import hex.Model;
 import hex.ModelMetrics;
 import hex.ModelMetricsClustering;
 import hex.SplitFrame;

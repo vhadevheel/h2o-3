@@ -2,7 +2,6 @@ package hex.glm;
 
 import hex.DataInfo;
 import hex.GLMMetrics;
-import hex.Model;
 import hex.ModelMetricsRegressionGLM;
 import hex.glm.GLMModel.GLMParameters;
 import hex.glm.GLMModel.GLMParameters.Family;

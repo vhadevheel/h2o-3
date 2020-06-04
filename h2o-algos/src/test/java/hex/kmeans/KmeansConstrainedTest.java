@@ -1,6 +1,5 @@
 package hex.kmeans;
 
-import hex.Model;
 import hex.ModelMetricsClustering;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

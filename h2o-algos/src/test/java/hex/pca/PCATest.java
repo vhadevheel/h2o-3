@@ -1,7 +1,6 @@
 package hex.pca;
 
 import hex.DataInfo;
-import hex.Model;
 import hex.SplitFrame;
 import hex.generic.Generic;
 import hex.generic.GenericModel;

@@ -1,6 +1,5 @@
 package hex.deeplearning;
 
-import hex.Model;
 import hex.ScoringInfo;
 import hex.deeplearning.DeepLearningModel.DeepLearningParameters;
 import hex.deeplearning.DeepLearningModel.DeepLearningParameters.Activation;

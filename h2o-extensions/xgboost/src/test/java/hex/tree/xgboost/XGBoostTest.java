@@ -841,7 +841,6 @@ public class XGBoostTest extends TestUtil {
       DKV.put(trainingFrameSubset);
       parms._weights_column = null;
       parms._train = trainingFrameSubset._key;
-      parms._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
 
       noWeightsModel = new hex.tree.xgboost.XGBoost(parms).trainModel().get();
 
