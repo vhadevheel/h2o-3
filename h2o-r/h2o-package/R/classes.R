@@ -913,3 +913,57 @@ setClass("H2OAutoML", slots = c(project_name = "character",
                       contains = "Keyed")
 #' @rdname h2o.keyof
 setMethod("h2o.keyof", signature("H2OAutoML"), function(object) attr(object, "id"))
+
+#' Format AutoML object in user-friendly way
+#'
+#' @param object an \code{H2OAutoML} object.
+#' @export
+setMethod("show", signature("H2OAutoML"), function(object) {
+  cat("AutoML Details\n")
+  cat("==============\n")
+  cat("Project Name: ", object@project_name, "\n")
+  cat("Leader Model: ", object@leader@model_id, "\n\n")
+
+  cat("Number of Trained Models: ", length(object@leaderboard), "\n")
+  cat("Start Time: ", as.character(as.POSIXct(as.numeric(object@training_info$start_epoch), origin="1970-01-01")), "\n")
+  cat("End Time: ", as.character(as.POSIXct(as.numeric(object@training_info$stop_epoch), origin="1970-01-01")), "\n")
+  cat("Duration: ", object@training_info$duration_secs, "s\n\n")
+
+  cat("Leaderboard\n")
+  cat("===========\n")
+  print(object@leaderboard, n = 10)
+  cat("\n\n")
+
+  cat("Leader Model Details\n")
+  cat("====================\n")
+  show(object@leader)
+
+  invisible(NULL)
+})
+
+#' Format AutoML object in user-friendly way
+#'
+#' @param object an \code{H2OAutoML} object.
+#' @export
+setMethod("summary", signature("H2OAutoML"), function(object) {
+  cat("AutoML Details\n")
+  cat("==============\n")
+  cat("Project Name: ", object@project_name, "\n")
+  cat("Leader Model: ", object@leader@model_id, "\n\n")
+
+  cat("Number of Trained Models: ", length(object@leaderboard), "\n")
+  cat("Start Time: ", as.character(as.POSIXct(as.numeric(object@training_info$start_epoch), origin="1970-01-01")), "\n")
+  cat("End Time: ", as.character(as.POSIXct(as.numeric(object@training_info$stop_epoch), origin="1970-01-01")), "\n")
+  cat("Duration: ", object@training_info$duration_secs, "s\n\n")
+
+  cat("Leaderboard\n")
+  cat("===========\n")
+  print(h2o.get_leaderboard(object, "ALL"), n = -1)
+  cat("\n\n")
+
+  cat("Leader Model Details\n")
+  cat("====================\n")
+  summary(object@leader)
+
+  invisible(NULL)
+})
