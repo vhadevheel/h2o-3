@@ -323,8 +323,7 @@ public class DeepLearning extends ModelBuilder<DeepLearningModel,DeepLearningMod
         }
       }
       DistributionFamily actualDistribution = cp.model_info().get_params()._distribution;
-      // in case of huber leave to AUTO until PUBDEV-7573 is resolved
-      if (_parms._evaluate_auto && _parms._distribution == DistributionFamily.AUTO && actualDistribution != DistributionFamily.huber) {
+      if (_parms._evaluate_auto && _parms._distribution == DistributionFamily.AUTO) {
         _parms._distribution = actualDistribution;
         cp._parms._distribution = actualDistribution;
       }
