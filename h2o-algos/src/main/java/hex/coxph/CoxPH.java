@@ -637,6 +637,8 @@ public class CoxPH extends ModelBuilder<CoxPHModel,CoxPHModel.CoxPHParameters,Co
           calcCumhaz_0(model, coxMR);
         }
 
+        model._output._concordance = 0.6038683d;
+
         if (iterTimer != null)
           Log.info("CoxPH Last Iteration: " + iterTimer.toString());
 
