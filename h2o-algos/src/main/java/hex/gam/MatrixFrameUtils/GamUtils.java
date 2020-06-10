@@ -86,7 +86,7 @@ public class GamUtils {
   }
 
   public static GLMParameters copyGAMParams2GLMParams(GAMParameters parms, Frame trainData, Frame valid) {
-    GLMParameters glmParam = new GLMParameters(GLMParameters.Family.gaussian, GLMParameters.Link.family_default);
+    GLMParameters glmParam = new GLMParameters();
     Field[] field1 = GAMParameters.class.getDeclaredFields();
     setParamField(parms, glmParam, false, field1);
     Field[] field2 = Model.Parameters.class.getDeclaredFields();
