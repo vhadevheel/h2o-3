@@ -891,8 +891,6 @@ public class XGBoostTest extends TestUtil {
       DKV.put(trainingFrameSubset);
       parms._weights_column = null;
       parms._train = trainingFrameSubset._key;
-      parms._categorical_encoding = Model.Parameters.CategoricalEncodingScheme.AUTO;
-      parms._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
 
       noWeightsModel = new hex.tree.xgboost.XGBoost(parms).trainModel().get();
 
@@ -1322,8 +1320,6 @@ public class XGBoostTest extends TestUtil {
       denseModel = (XGBoostModel) Scope.track_generic(new hex.tree.xgboost.XGBoost(parms).trainModel().get());
       assertNotNull(denseModel);
 
-      parms._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
-      parms._categorical_encoding = Model.Parameters.CategoricalEncodingScheme.AUTO;
       parms._dmatrix_type = XGBoostModel.XGBoostParameters.DMatrixType.sparse;
       sparseModel = (XGBoostModel) Scope.track_generic(new hex.tree.xgboost.XGBoost(parms).trainModel().get());
       assertNotNull(sparseModel);
@@ -1383,8 +1379,6 @@ public class XGBoostTest extends TestUtil {
       parms._backend = XGBoostModel.XGBoostParameters.Backend.cpu;
       parms._ntrees = 1;
       parms._dmatrix_type = XGBoostModel.XGBoostParameters.DMatrixType.auto;
-      parms._fold_assignment = Model.Parameters.FoldAssignmentScheme.AUTO;
-      parms._categorical_encoding = Model.Parameters.CategoricalEncodingScheme.AUTO;
 
       // Dense model utilizes fold column zero values to calculate precise memory requirements
       denseModel = (XGBoostModel) Scope.track_generic(new hex.tree.xgboost.XGBoost(parms).trainModel().get());
