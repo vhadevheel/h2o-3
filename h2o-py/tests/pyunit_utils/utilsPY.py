@@ -4356,5 +4356,5 @@ def assertCoefEqual(regCoeff, coeff, coeffClassSet, tol=1e-6):
         val2 = coeff[coeffClassSet[classInd]][temp[0]]
         assert type(val1)==type(val2), "type of coeff1: {0}, type of coeff2: {1}".format(type(val1), type(val2))
         diff = abs(val1-val2)
-        print("val1: {0}, val2: {1}".format(val1, val2))
+        print("val1: {0}, val2: {1}, tol: {2}".format(val1, val2, tol))
         assert diff < tol, "diff {0} exceeds tolerance {1}.".format(diff, tol)
