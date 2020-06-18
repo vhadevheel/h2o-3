@@ -29,8 +29,7 @@ public class IsolationForestV3 extends SharedTreeV3<IsolationForest, IsolationFo
                 "stopping_rounds",
                 "stopping_metric",
                 "stopping_tolerance",
-                "export_checkpoints_dir",
-                "evaluate_auto"
+                "export_checkpoints_dir"
         };
 
         // Input fields

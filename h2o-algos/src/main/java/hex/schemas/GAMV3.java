@@ -73,8 +73,7 @@ public class GAMV3 extends ModelBuilderSchema<GAM, GAMV3, GAMV3.GAMParametersV3>
             "gam_columns",  // array: predictor column names array
             "bs", // array, name of basis functions used
             "scale", // array, smoothing parameter for GAM,
-            "keep_gam_cols",
-            "evaluate_auto"
+            "keep_gam_cols"
     };
 
     @API(help = "Seed for pseudo random number generator (if applicable)", gridable = true)

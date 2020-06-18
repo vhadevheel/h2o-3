@@ -15,6 +15,7 @@ from h2o.estimators.isolation_forest import H2OIsolationForestEstimator
 
 
 def test_isolation_forrest_effective_parameters():
+    h2o.set_system_property("sys.ai.h2o.algos.evaluate_auto_model_parameters", "true")
     train2 = h2o.import_file(pyunit_utils.locate("smalldata/anomaly/ecg_discord_train.csv"))
 
     if1 = H2OIsolationForestEstimator(ntrees=7, seed=12, sample_size=5, stopping_rounds=3)
@@ -29,10 +30,11 @@ def test_isolation_forrest_effective_parameters():
     assert if1.parms['categorical_encoding']['input_value'] == 'AUTO'
     assert if1.parms['categorical_encoding']['actual_value'] == if2.parms['categorical_encoding']['actual_value']
 
-    if1 = H2OIsolationForestEstimator(ntrees=7, seed=12, sample_size=5, stopping_rounds=3, evaluate_auto=False)
+    h2o.set_system_property("sys.ai.h2o.algos.evaluate_auto_model_parameters", "false")
+    if1 = H2OIsolationForestEstimator(ntrees=7, seed=12, sample_size=5, stopping_rounds=3)
     if1.train(training_frame=train2)
 
-    if2 = H2OIsolationForestEstimator(ntrees=7, seed=12, sample_size=5, stopping_rounds=3, stopping_metric = 'anomaly_score', categorical_encoding="Enum", evaluate_auto=False)
+    if2 = H2OIsolationForestEstimator(ntrees=7, seed=12, sample_size=5, stopping_rounds=3, stopping_metric = 'anomaly_score', categorical_encoding="Enum")
     if2.train(training_frame=train2)
 
     assert if1.parms['stopping_metric']['input_value'] == 'AUTO'

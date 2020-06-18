@@ -266,6 +266,11 @@ public class RegisterV3Api extends AbstractRegister {
             "POST /99/Models.upload.bin/{model_id}", ModelsHandler.class, "uploadModel",
             "Upload given binary model into H2O.");
 
+    context.registerEndpoint("setSystemProperty", 
+            "POST /3/SetSystemProperty", SetSystemPropertyHandler.class, "setSystemProperty",
+            "Set system property.");
+
+
     context.registerEndpoint("exportMojo",
             "GET /99/Models.mojo/{model_id}", ModelsHandler.class, "exportMojo",
             "Export given model as Mojo.");

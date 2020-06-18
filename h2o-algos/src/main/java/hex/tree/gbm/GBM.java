@@ -1,6 +1,7 @@
 package hex.tree.gbm;
 
 import hex.DistributionFactory;
+import hex.Model;
 import hex.genmodel.utils.DistributionFamily;
 import hex.Distribution;
 import hex.ModelCategory;
@@ -220,7 +221,7 @@ public class GBM extends SharedTree<GBMModel,GBMModel.GBMParameters,GBMModel.GBM
         _initialPrediction = getInitialValueQuantile(_parms._quantile_alpha);
       }
       _model._output._init_f = _initialPrediction; //always write the initial value here (not just for Bernoulli)
-      if (_parms._evaluate_auto) {
+      if (Model.evaluateAutoModelParameters()) {
         _model.initActualParamValuesAfterOutputSetup(_nclass, isClassifier());
       }
 

@@ -15,6 +15,7 @@ from h2o.estimators.aggregator import H2OAggregatorEstimator
 
 
 def test_aggregator_effective_parameters():
+    h2o.set_system_property("sys.ai.h2o.algos.evaluate_auto_model_parameters", "true")
     frame = h2o.create_frame(rows=10000, cols=10, categorical_fraction=0.6, integer_fraction=0, binary_fraction=0, real_range=100,
                              integer_range=100, missing_fraction=0, factors=100, seed=1234)
 

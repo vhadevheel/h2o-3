@@ -1,9 +1,8 @@
 setwd(normalizePath(dirname(R.utils::commandArgs(asValues=TRUE)$"f")))
 source("../../../scripts/h2o-r-test-setup.R")
 
-
 test.gbm.effective_parameters <- function() {
-   
+    h2o.set_system_property("sys.ai.h2o.algos.evaluate_auto_model_parameters", "true")
     cars <- h2o.uploadFile(locate("smalldata/junit/cars_20mpg.csv"))
     seed <- sample(1:1000000, 1)
     r <- h2o.runif(cars,seed=seed)

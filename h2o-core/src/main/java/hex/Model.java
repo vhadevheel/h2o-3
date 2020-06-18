@@ -51,6 +51,8 @@ import static water.util.FrameUtils.cleanUp;
 public abstract class Model<M extends Model<M,P,O>, P extends Model.Parameters, O extends Model.Output> extends Lockable<M>
         implements StreamWriter {
 
+  public static final String EVAL_AUTO_PARAMS_ENABLED = H2O.OptArgs.SYSTEM_PROP_PREFIX + "algos.evaluate_auto_model_parameters";
+
   public P _parms;   // TODO: move things around so that this can be protected
   public P _input_parms;
   public O _output;  // TODO: move things around so that this can be protected
@@ -237,7 +239,6 @@ public abstract class Model<M extends Model<M,P,O>, P extends Model.Parameters, 
     public boolean _keep_cross_validation_fold_assignment = false;
     public boolean _parallelize_cross_validation = true;
     public boolean _auto_rebalance = true;
-    public boolean _evaluate_auto = true;
 
     public void setTrain(Key<Frame> train) {
       this._train = train;
@@ -1016,7 +1017,7 @@ public abstract class Model<M extends Model<M,P,O>, P extends Model.Parameters, 
     super(selfKey);
     assert parms != null;
     _parms = parms;
-    if (_parms._evaluate_auto) {
+    if (evaluateAutoModelParameters()) {
       initActualParamValues();
     }
     _output = output;  // Output won't be set if we're assert output != null;
@@ -1027,6 +1028,13 @@ public abstract class Model<M extends Model<M,P,O>, P extends Model.Parameters, 
   }
 
   public void initActualParamValues() {}
+  
+  /**
+   * Whether to evaluate input parameters of value AUTO.
+   */
+  public static boolean evaluateAutoModelParameters() {
+      return Boolean.parseBoolean(System.getProperty(EVAL_AUTO_PARAMS_ENABLED, "true"));
+  }
   
   /**
    * Deviance of given distribution function at predicted value f

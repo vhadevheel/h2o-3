@@ -551,3 +551,22 @@ h2o.download_model <- function(model, path=NULL) {
     
     return(paste0(file_path))
 }
+
+#'
+#' Set System Property
+#'
+#' Set the specified system property to specified value
+#'
+#' For example, 
+#'     h2o.set_system_property("sys.ai.h2o.algos.evaluate_auto_model_parameters", "false")
+#'
+#' @param property system property to be set
+#' @param value value to be set
+#' @export
+h2o.set_system_property <- function(property, value) {
+parms <- list()
+parms$property <- property
+parms$value <- value
+    
+res <- .h2o.__remoteSend('SetSystemProperty', method = "POST", .params = parms, h2oRestApiVersion = 3)
+}
