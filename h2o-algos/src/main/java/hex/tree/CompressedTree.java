@@ -39,7 +39,7 @@ public class CompressedTree extends LightKeyed<CompressedTree> {
   }
 
   @Override
-  public CompressedTree reloadFromBytes(Key k, byte[] ary) {
+  public CompressedTree reloadFromBytes(Key<CompressedTree> k, byte[] ary) {
     _key = k;
     _bits = ary;
     return this;
@@ -47,7 +47,7 @@ public class CompressedTree extends LightKeyed<CompressedTree> {
 
   @Override
   public byte[] asBytes() {
-    return _bits;
+    return _bits == null ? UNREAD : _bits;
   }
 
   public double score(final double row[], final String[][] domains) {
